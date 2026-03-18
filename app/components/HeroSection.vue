@@ -1,9 +1,10 @@
 <template>
   <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-    <!-- Background decoration -->
-    <div class="absolute inset-0 -z-10">
+    <!-- Background decoration with parallax -->
+    <div class="absolute inset-0 -z-10" ref="parallaxRef" :style="{ transform: `translateY(${parallaxOffset}px)` }">
       <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-500/10 dark:bg-brand-500/5 rounded-full blur-3xl"></div>
       <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-brand-600/5 dark:bg-brand-600/5 rounded-full blur-3xl"></div>
+      <div class="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-3xl"></div>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -41,10 +42,12 @@
         </a>
       </div>
 
-      <!-- Stats -->
-      <div v-motion-slide-visible-bottom :delay="400" class="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto">
+      <!-- Stats (Animated Counters) -->
+      <div v-motion-slide-visible-bottom :delay="400" ref="statsRef" class="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto">
         <div v-for="stat in stats" :key="stat.label" class="text-center">
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</div>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            {{ stat.animated }}{{ stat.suffix }}
+          </div>
           <div class="text-sm text-gray-500 dark:text-gray-500 mt-1">{{ stat.label }}</div>
         </div>
       </div>
@@ -160,12 +163,38 @@
 </template>
 
 <script setup lang="ts">
-const stats = [
-  { value: '2M+', label: 'Pengguna' },
-  { value: '4.8★', label: 'Rating' },
-  { value: '150+', label: 'Negara' },
-  { value: '99.9%', label: 'Uptime' },
-]
+const statsRef = ref<HTMLElement | null>(null)
+const parallaxRef = ref<HTMLElement | null>(null)
+const hasAnimated = ref(false)
+const parallaxOffset = ref(0)
+
+const stats = reactive([
+  { target: 2, suffix: 'M+', label: 'Pengguna', animated: '0', decimals: 0 },
+  { target: 4.8, suffix: '★', label: 'Rating', animated: '0', decimals: 1 },
+  { target: 150, suffix: '+', label: 'Negara', animated: '0', decimals: 0 },
+  { target: 99.9, suffix: '%', label: 'Uptime', animated: '0', decimals: 1 },
+])
+
+function animateCounters() {
+  if (hasAnimated.value) return
+  hasAnimated.value = true
+  const duration = 2000
+  const startTime = performance.now()
+
+  function tick(now: number) {
+    const elapsed = now - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    const eased = 1 - Math.pow(1 - progress, 3)
+
+    stats.forEach((stat) => {
+      const current = stat.target * eased
+      stat.animated = stat.decimals > 0 ? current.toFixed(stat.decimals) : Math.floor(current).toString()
+    })
+
+    if (progress < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
 
 const eqBars = ref([45, 55, 72, 80, 65, 50, 60, 75, 55, 40])
 const freqLabels = ['31', '62', '125', '250', '500', '1K', '2K', '4K', '8K', '16K']
@@ -180,6 +209,26 @@ onMounted(() => {
   interval = setInterval(() => {
     eqBars.value = eqBars.value.map((v) => Math.max(20, Math.min(90, v + (Math.random() - 0.5) * 20)))
   }, 1500)
+
+  // Intersection observer for animated counters
+  if (statsRef.value) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          animateCounters()
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.3 }
+    )
+    observer.observe(statsRef.value)
+  }
+
+  // Parallax scroll
+  const handleScroll = () => {
+    parallaxOffset.value = window.scrollY * 0.3
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true })
 })
 
 onUnmounted(() => {

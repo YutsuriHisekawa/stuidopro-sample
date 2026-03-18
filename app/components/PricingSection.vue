@@ -27,10 +27,13 @@
       <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <div v-for="(plan, index) in plans" :key="plan.name"
           v-motion-slide-visible-bottom :delay="200 + index * 100"
-          class="relative p-8 rounded-2xl border transition-all"
+          class="relative p-8 rounded-2xl border transition-all duration-300 pricing-card"
           :class="plan.popular 
             ? 'bg-gray-900 dark:bg-white border-brand-600 shadow-2xl shadow-brand-600/10 scale-105' 
-            : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-brand-300 dark:hover:border-brand-700'">
+            : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-xl hover:-translate-y-1'"
+          @mousemove="handleTilt($event, index)"
+          @mouseleave="resetTilt(index)"
+          :style="tiltStyles[index]">
           
           <!-- Popular badge -->
           <div v-if="plan.popular" class="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -71,6 +74,16 @@
               <span :class="plan.popular ? 'text-gray-300 dark:text-gray-600' : 'text-gray-600 dark:text-gray-400'" class="text-sm">{{ feature }}</span>
             </li>
           </ul>
+
+          <!-- Guarantee Badge -->
+          <div class="mt-6 pt-5 border-t" :class="plan.popular ? 'border-gray-700 dark:border-gray-200' : 'border-gray-200 dark:border-gray-700'">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 flex-shrink-0" :class="plan.popular ? 'text-green-400 dark:text-green-600' : 'text-green-600 dark:text-green-500'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+              <span :class="plan.popular ? 'text-gray-300 dark:text-gray-600' : 'text-gray-600 dark:text-gray-400'" class="text-xs font-medium">30 Hari Garansi Uang Kembali</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -79,6 +92,24 @@
 
 <script setup lang="ts">
 const annual = ref(false)
+
+const tiltStyles = reactive<Record<number, Record<string, string>>>({})
+
+function handleTilt(e: MouseEvent, index: number) {
+  const card = e.currentTarget as HTMLElement
+  const rect = card.getBoundingClientRect()
+  const x = e.clientX - rect.left
+  const y = e.clientY - rect.top
+  const centerX = rect.width / 2
+  const centerY = rect.height / 2
+  const rotateX = ((y - centerY) / centerY) * -5
+  const rotateY = ((x - centerX) / centerX) * 5
+  tiltStyles[index] = { transform: `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)` }
+}
+
+function resetTilt(index: number) {
+  tiltStyles[index] = { transform: 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)' }
+}
 
 const plans = [
   {
@@ -133,3 +164,9 @@ const plans = [
   },
 ]
 </script>
+
+<style scoped>
+.pricing-card {
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+</style>
