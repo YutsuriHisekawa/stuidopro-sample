@@ -13,7 +13,7 @@
             <span class="text-xl font-bold text-gray-900 dark:text-white">Studio <span class="text-brand-600">Pro</span></span>
           </a>
           <p class="mt-4 text-sm text-gray-500 dark:text-gray-500 leading-relaxed">
-            Enhance your audio experience with professional-grade sound processing.
+            Tingkatkan pengalaman audio kamu dengan pemrosesan suara kelas profesional.
           </p>
         </div>
 

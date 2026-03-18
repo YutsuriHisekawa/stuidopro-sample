@@ -41,8 +41,8 @@ function toggle(index: number) {
 
 const faqs = [
   {
-    question: 'Apakah Studio Pro gratis?',
-    answer: 'Ya! Studio Pro menyediakan versi gratis dengan fitur dasar seperti equalizer 5-band dan beberapa preset. Untuk fitur premium seperti Bass Boost, 3D Surround, dan Low Latency mode, kamu bisa upgrade ke paket Pro.',
+    question: 'Berapa harga Studio Pro?',
+    answer: 'Studio Pro tersedia mulai dari Rp29.000/bulan untuk paket Starter. Kami juga punya paket Pro (Rp79.000/bulan) yang paling populer dengan fitur lengkap, dan paket Enterprise (Rp249.000/bulan) untuk tim & bisnis. Semua paket dilengkapi garansi uang kembali 30 hari.',
   },
   {
     question: 'Apakah Studio Pro berjalan di semua sistem operasi?',
@@ -58,7 +58,7 @@ const faqs = [
   },
   {
     question: 'Berapa banyak perangkat yang bisa saya gunakan?',
-    answer: 'Paket Free bisa digunakan di 1 perangkat, paket Pro mendukung hingga 3 perangkat, dan paket Enterprise tidak memiliki batasan jumlah perangkat.',
+    answer: 'Paket Starter bisa digunakan di 1 perangkat, paket Pro mendukung hingga 3 perangkat, dan paket Enterprise tidak memiliki batasan jumlah perangkat.',
   },
   {
     question: 'Apakah Studio Pro mempengaruhi performa komputer?',

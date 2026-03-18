@@ -14,7 +14,9 @@
 
         <!-- Desktop Nav -->
         <div class="hidden md:flex items-center gap-8">
-          <a v-for="link in navLinks" :key="link.href" :href="link.href" @click.prevent="smoothScroll(link.href)" class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-500 transition-colors">
+          <a v-for="link in navLinks" :key="link.href" :href="link.href" @click.prevent="smoothScroll(link.href)"
+            class="text-sm font-medium transition-colors"
+            :class="activeSection === link.href ? 'text-brand-600 dark:text-brand-500' : 'text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-500'">
             {{ link.label }}
           </a>
         </div>
@@ -65,6 +67,7 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
 const mobileOpen = ref(false)
+const activeSection = ref('')
 
 const navLinks = [
   { href: '#features', label: 'Fitur' },
@@ -80,4 +83,23 @@ function toggleColorMode() {
 function smoothScroll(target: string) {
   document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' })
 }
+
+onMounted(() => {
+  const sectionIds = navLinks.map(l => l.href.slice(1))
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          activeSection.value = '#' + entry.target.id
+        }
+      }
+    },
+    { rootMargin: '-20% 0px -60% 0px' }
+  )
+  for (const id of sectionIds) {
+    const el = document.getElementById(id)
+    if (el) observer.observe(el)
+  }
+  onUnmounted(() => observer.disconnect())
+})
 </script>

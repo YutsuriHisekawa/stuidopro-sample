@@ -14,7 +14,16 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Studio Pro - Enhance your audio experience with professional-grade sound processing.' },
+        { name: 'description', content: 'Studio Pro — Tingkatkan pengalaman audio kamu dengan pemrosesan suara kelas profesional. Equalizer, Bass Boost, 3D Surround & lainnya.' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:title', content: 'Studio Pro — Professional Audio Enhancement' },
+        { property: 'og:description', content: 'Tingkatkan kualitas musik, podcast, dan gaming ke level berikutnya dengan Studio Pro.' },
+        { property: 'og:image', content: '/og-image.png' },
+        { property: 'og:url', content: 'https://studiopro.app' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Studio Pro — Professional Audio Enhancement' },
+        { name: 'twitter:description', content: 'Tingkatkan kualitas musik, podcast, dan gaming ke level berikutnya dengan Studio Pro.' },
+        { name: 'twitter:image', content: '/og-image.png' },
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
